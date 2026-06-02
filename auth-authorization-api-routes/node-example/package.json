@@ -1,0 +1,16 @@
+{
+  "name": "auth-authorization-api-routes",
+  "version": "1.0.0",
+  "description": "Progressive tutorial: authentication and authorization for protected API routes",
+  "scripts": {
+    "step0": "node step0-naive.js",
+    "step1": "node step1-authentication.js",
+    "step2": "node step2-authorization.js",
+    "step3": "node step3-token-lifecycle.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
