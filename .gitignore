@@ -29,3 +29,8 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Agent local files
+/AGENTS.md
+.pi/
+.claude/
