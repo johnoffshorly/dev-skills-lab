@@ -1,0 +1,11 @@
+{
+  "name": "sql-schema-design-tutorial",
+  "version": "1.0.0",
+  "description": "SQLite schema design tutorial — naive to production-ready",
+  "scripts": {
+    "step0": "node step0-naive.js",
+    "step1": "node step1-normalization.js",
+    "step2": "node step2-audit-softdelete.js",
+    "step3": "node step3-migrations-indexes.js"
+  }
+}
