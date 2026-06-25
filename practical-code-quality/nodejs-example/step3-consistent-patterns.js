@@ -32,8 +32,8 @@ const Errors = {
   invalidId:     () => new AppError(400, 'INVALID_ID',     'ID must be a positive integer'),
   invalidJson:   () => new AppError(400, 'INVALID_JSON',   'Request body must be valid JSON'),
   invalidTitle:  () => new AppError(400, 'INVALID_TITLE',  'Title must be a non-empty string'),
-  notFound:      () => new AppError(404, 'NOT_FOUND',      'Task not found'),
-  notFoundRoute: () => new AppError(404, 'NOT_FOUND',      'Route not found'),
+  notFound:      () => new AppError(404, 'NOT_FOUND',       'Task not found'),
+  notFoundRoute: () => new AppError(404, 'NOT_FOUND_ROUTE',  'Route not found'),
 };
 
 // ─── Data / business logic layer ─────────────────────────────────────────────
