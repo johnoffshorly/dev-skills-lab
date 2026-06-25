@@ -280,12 +280,13 @@ curl -s http://localhost:3000/orders/deadbeef
 curl -s http://localhost:3000/health | cat
 ```
 
-Expected (values will vary):
+Expected (values will vary). The health request itself is counted in `totalRequests`, so after the three requests above this shows `4`:
 
 ```json
 {
   "ok": true,
   "status": "up",
+  "requestId": "e5f6a7b8c9d0",
   "uptimeSeconds": 12,
   "totalRequests": 4,
   "totalErrors": 2,

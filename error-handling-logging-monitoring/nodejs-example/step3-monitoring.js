@@ -67,13 +67,14 @@ const metrics = {
     return sorted[idx] ?? sorted[sorted.length - 1];
   },
 
-  summary() {
+  summary(extraRequests = 0) {
+    const totalRequests = this.totalRequests + extraRequests;
     return {
       uptimeSeconds:  Math.floor((Date.now() - START_TIME) / 1000),
-      totalRequests:  this.totalRequests,
+      totalRequests,
       totalErrors:    this.totalErrors,
-      errorRate:      this.totalRequests > 0
-        ? (this.totalErrors / this.totalRequests).toFixed(4)
+      errorRate:      totalRequests > 0
+        ? (this.totalErrors / totalRequests).toFixed(4)
         : '0.0000',
       errorsByCode:   this.errorsByCode,
       slowRequests:   this.slowRequests,
@@ -183,9 +184,9 @@ const server = http.createServer((req, res) => {
 
     // GET /health — no auth, returns live metrics snapshot
     if (req.method === 'GET' && req.url === '/health') {
-      const snap = metrics.summary();
+      const snap = metrics.summary(1);
       logger.debug('Health check', { requestId, ...snap });
-      sendJSON(res, 200, { ok: true, status: 'up', ...snap });
+      sendJSON(res, 200, { ok: true, status: 'up', requestId, ...snap });
       finish(200);
       return;
     }
@@ -217,8 +218,26 @@ const server = http.createServer((req, res) => {
 
 // ─── Process-level safety ────────────────────────────────────────────────────
 
+function normalizeReason(reason) {
+  if (reason instanceof Error) {
+    return { name: reason.name, message: reason.message, stack: reason.stack };
+  }
+  if (reason && typeof reason === 'object') {
+    let message;
+    try {
+      message = typeof reason.message === 'string' ? reason.message : JSON.stringify(reason);
+    } catch {
+      message = '[unserializable rejection reason]';
+    }
+    const normalized = { name: 'NonErrorRejection', message };
+    if (typeof reason.stack === 'string') normalized.stack = reason.stack;
+    return normalized;
+  }
+  return { name: 'NonErrorRejection', message: String(reason) };
+}
+
 process.on('unhandledRejection', (reason) => {
-  logger.error('Unhandled rejection', { message: String(reason) });
+  logger.error('Unhandled rejection', normalizeReason(reason));
   process.exit(1);
 });
 
@@ -237,8 +256,5 @@ process.on('SIGTERM', () => {
 });
 
 server.listen(PORT, () => {
-  logger.info('Server started', { port: PORT, step: 3 });
-  console.error('[STEP 3] Monitoring — running on http://localhost:' + PORT);
-  console.error('Fixed: /health endpoint, metrics counters, request duration, requestId everywhere');
-  console.error('All step 0 problems resolved. Logs emit to stdout as JSON.');
+  logger.info('Server started', { port: PORT, step: 3, note: 'JSON logs on stdout' });
 });

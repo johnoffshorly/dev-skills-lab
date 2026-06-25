@@ -36,6 +36,24 @@ const logger = {
   error: (msg, ctx) => log('error', msg, ctx),
 };
 
+function normalizeReason(reason) {
+  if (reason instanceof Error) {
+    return { name: reason.name, message: reason.message, stack: reason.stack };
+  }
+  if (reason && typeof reason === 'object') {
+    let message;
+    try {
+      message = typeof reason.message === 'string' ? reason.message : JSON.stringify(reason);
+    } catch {
+      message = '[unserializable rejection reason]';
+    }
+    const normalized = { name: 'NonErrorRejection', message };
+    if (typeof reason.stack === 'string') normalized.stack = reason.stack;
+    return normalized;
+  }
+  return { name: 'NonErrorRejection', message: String(reason) };
+}
+
 // ─── AppError (carried forward from step 1) ───────────────────────────────────
 
 class AppError extends Error {
@@ -146,7 +164,7 @@ const server = http.createServer((req, res) => {
 });
 
 process.on('unhandledRejection', (reason) => {
-  logger.error('Unhandled rejection', { message: String(reason) });
+  logger.error('Unhandled rejection', normalizeReason(reason));
   process.exit(1);
 });
 
@@ -156,8 +174,5 @@ process.on('uncaughtException', (err) => {
 });
 
 server.listen(PORT, () => {
-  logger.info('Server started', { port: PORT, step: 2 });
-  console.error('[STEP 2] Structured logging — running on http://localhost:' + PORT);
-  console.error('Fixed: JSON logs, log levels, requestId threaded per request');
-  console.error('Still missing: /health endpoint, error counters, request duration');
+  logger.info('Server started', { port: PORT, step: 2, note: 'JSON logs on stdout' });
 });
