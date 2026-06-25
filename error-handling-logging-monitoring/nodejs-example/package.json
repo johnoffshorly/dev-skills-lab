@@ -1,0 +1,11 @@
+{
+  "name": "error-handling-logging-monitoring",
+  "version": "1.0.0",
+  "description": "Tutorial: Error Handling, Logging, and Monitoring Best Practices",
+  "scripts": {
+    "step0": "node step0-naive.js",
+    "step1": "node step1-structured-errors.js",
+    "step2": "node step2-structured-logging.js",
+    "step3": "node step3-monitoring.js"
+  }
+}
