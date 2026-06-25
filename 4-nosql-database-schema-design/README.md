@@ -19,7 +19,7 @@ NoSQL databases accept anything — that's their strength and their trap. This t
 ## 1. Setup
 
 ```bash
-cd nosql-database-schema-design/nodejs-example
+cd 4-nosql-database-schema-design/nodejs-example
 npm install
 ```
 

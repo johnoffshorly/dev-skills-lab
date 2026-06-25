@@ -19,7 +19,7 @@ A Node.js task-manager API (no frameworks, no external deps) that starts as a na
 No install needed — uses Node.js stdlib only. Requires Node.js 14+.
 
 ```bash
-cd nodejs-example
+cd 5-practical-code-quality/nodejs-example
 ```
 
 | File | What it shows |

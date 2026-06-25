@@ -20,7 +20,7 @@ A Node.js order API (zero external deps) that starts with swallowed errors and p
 No install required — uses Node.js stdlib only. Requires Node.js 14+.
 
 ```bash
-cd nodejs-example
+cd 6-error-handling-logging-monitoring/nodejs-example
 ```
 
 | File | What it shows |

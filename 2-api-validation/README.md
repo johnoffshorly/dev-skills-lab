@@ -20,7 +20,7 @@ By the end, you will understand how to protect APIs from:
 ## 1. Setup
 
 ```bash
-cd ~/Projects/OKR/api-validation/nodejs-example
+cd 2-api-validation/nodejs-example
 npm install
 ```
 

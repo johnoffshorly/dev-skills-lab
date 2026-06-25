@@ -15,7 +15,7 @@ This tutorial builds proper auth from scratch. You will see exactly what breaks 
 ## 1. Setup
 
 ```bash
-cd auth-authorization-api-routes/node-example
+cd 1-auth-authorization-api-routes/node-example
 npm install
 ```
 

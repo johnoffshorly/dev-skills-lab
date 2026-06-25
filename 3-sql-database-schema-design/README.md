@@ -18,7 +18,7 @@ Most tutorials show you the "right" schema. This one starts with the wrong one a
 ## 1. Setup
 
 ```bash
-cd sql-database-schema-design/nodejs-example
+cd 3-sql-database-schema-design/nodejs-example
 node step0-naive.js
 ```
 
