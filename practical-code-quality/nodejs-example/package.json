@@ -1,0 +1,11 @@
+{
+  "name": "practical-code-quality",
+  "version": "1.0.0",
+  "description": "Tutorial: Practical Code Quality — Simplicity, Reusability, Maintainability",
+  "scripts": {
+    "step0": "node step0-naive.js",
+    "step1": "node step1-extract-helpers.js",
+    "step2": "node step2-separate-concerns.js",
+    "step3": "node step3-consistent-patterns.js"
+  }
+}
