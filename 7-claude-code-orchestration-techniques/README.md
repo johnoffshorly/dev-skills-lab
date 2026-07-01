@@ -10,7 +10,7 @@ This guide shows you how to turn bare Claude Code into a small orchestration set
 - `commit` for git work
 - optional `devops` for infra work
 - optional `security` for risk checks
-- optional hooks for visibility
+- hooks for visibility and process gates
 
 ## How It Should Feel
 
@@ -464,11 +464,40 @@ What this does **not** give you yet: a reason to copy it into every repo.
 
 Add `.claude/settings.json` after the agents exist.
 
-Keep hooks optional. Use them for visibility only.
+Use hooks for visibility and to enforce process gates.
 
-What this gives you: wiring for session logs.
+What this gives you: wiring for session logs and stricter agent behavior.
 
-What this does **not** give you yet: core orchestration. The agents still do that.
+What this does **not** give you yet: a replacement for the agents. They still do the core orchestration.
+
+### Optional: Add a Plan-Gate Hook
+
+Add this `UserPromptSubmit` hook when you want every prompt to carry a reminder to plan first, review, and get explicit approval before code is written.
+
+Create `.claude/hooks/user_prompt_submit.sh`:
+
+```bash
+#!/bin/bash
+jq -n --arg msg "REMINDER: Before doing the implementation especially if it's a multi-step task: (1) STRICTLY route to the master agent for planning first, (2) run /diffwarden on the plan and loop until it scores 5/5 or up to 5 times then surface the best result to the user for a manual call, (3) get explicit user approval before writing any code." '{hookSpecificOutput: {hookEventName: "UserPromptSubmit", additionalContext: $msg}}'
+```
+
+Register it in `.claude/settings.json`:
+
+```json
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/user_prompt_submit.sh",
+            "statusMessage": "Checking plan gate..."
+          }
+        ]
+      }
+    ],
+```
+
+This ensures stricter rules for the agents: every prompt gets a reminder to plan with `master` first, gate on review, and get explicit approval before any code is written.
 
 ## Step 8 — Run Your First Task
 
@@ -504,7 +533,7 @@ Avoid these:
 - Letting subagent replies get long and noisy
 - Building one giant shared agent pack nobody can maintain
 
-Keep the system small: `master` plans and reviews, `worker` edits and tests, `commit` owns git mutations, specialists stay optional, and hooks stay observability only.
+Keep the system small: `master` plans and reviews, `worker` edits and tests, `commit` owns git mutations, specialists stay optional, and hooks add visibility and process gates.
 
 ## Copy/Paste Starter Kit
 
@@ -887,6 +916,17 @@ ALLOW | CONFIRM: <risk to confirm> | BLOCK: <why>
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/user_prompt_submit.sh",
+            "statusMessage": "Checking plan gate..."
+          }
+        ]
+      }
     ]
   }
 }
@@ -908,6 +948,13 @@ echo "[claude] session start: $(date -Iseconds)" >&2
 set -euo pipefail
 
 echo "[claude] response stop: $(date -Iseconds)" >&2
+```
+
+### `.claude/hooks/user_prompt_submit.sh` (optional plan-gate hook)
+
+```bash
+#!/bin/bash
+jq -n --arg msg "REMINDER: Before doing the implementation especially if it's a multi-step task: (1) STRICTLY route to the master agent for planning first, (2) run /diffwarden on the plan and loop until it scores 5/5 or up to 5 times then surface the best result to the user for a manual call, (3) get explicit user approval before writing any code." '{hookSpecificOutput: {hookEventName: "UserPromptSubmit", additionalContext: $msg}}'
 ```
 
 [Back to root README](../README.md)
